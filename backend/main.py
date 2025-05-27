@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import auth, moderate
+from backend.routers import auth, moderate
 
 app = FastAPI()
 

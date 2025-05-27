@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 import uuid
 
-from database import tokens_collection
+from backend.database import tokens_collection
 
 router = APIRouter()
 
