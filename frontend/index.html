@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image Moderation</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    label, input, button { display: block; margin: 10px 0; }
+    .result { margin-top: 20px; }
+    .result p { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>Image Moderation Tool</h1>
+
+  <label for="token">Enter your token:</label>
+  <input type="text" id="token" placeholder="Bearer your-token-here" />
+
+  <label for="image">Select an image:</label>
+  <input type="file" id="image" accept="image/*" />
+
+  <button onclick="submitImage()">Moderate</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    async function submitImage() {
+      const token = document.getElementById("token").value;
+      const fileInput = document.getElementById("image");
+      const resultDiv = document.getElementById("result");
+
+      if (!token || fileInput.files.length === 0) {
+        alert("Please provide a token and select an image.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      const response = await fetch("http://127.0.0.1:8000/moderate/", {
+        method: "POST",
+        headers: {
+          Authorization: token
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        resultDiv.innerHTML = `
+          <h3>Moderation Results for: ${data.filename}</h3>
+          <p><strong>Nudity:</strong> ${data.result.nudity}</p>
+          <p><strong>Violence:</strong> ${data.result.violence}</p>
+          <p><strong>Self-harm:</strong> ${data.result.self_harm}</p>
+          <p><strong>Hate symbol:</strong> ${data.result.hate_symbol}</p>
+        `;
+      } else {
+        resultDiv.innerHTML = `<p style="color:red;"><strong>Error:</strong> ${data.detail || "Something went wrong"}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
