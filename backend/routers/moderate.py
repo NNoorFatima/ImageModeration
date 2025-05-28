@@ -5,7 +5,7 @@ import random
 
 router = APIRouter()
 
-# Helper: Check if token is valid
+#token is valid
 def validate_token(authorization: str):
     token = authorization.replace("Bearer ", "")
     token_doc = tokens_collection.find_one({"token": token})
@@ -25,7 +25,7 @@ async def moderate_image(file: UploadFile = File(...), authorization: str = Head
         "timestamp": datetime.utcnow()
     })
 
-    # Fake moderation logic (random probabilities)
+    # (random probabilities) for moderation logic
     fake_report = {
         "nudity": round(random.uniform(0, 1), 2),
         "violence": round(random.uniform(0, 1), 2),
